@@ -1,4 +1,4 @@
-import re
+﻿import re
 from urllib.parse import urlparse
 from datetime import datetime
 from collections import defaultdict
@@ -32,7 +32,7 @@ def parse(ignore_files=False,
 
         log_url = urlparse(match_dict['request']).netloc + urlparse(match_dict['request']).path
 
-        # по дате
+        # check dates
         if start_at or stop_at:
             log_date = datetime.strptime(match_dict['request_date'], '%d/%b/%Y %H:%M:%S')
             if stop_at and log_date > stop_at:
@@ -40,34 +40,34 @@ def parse(ignore_files=False,
             if start_at and log_date < start_at:
                 continue
 
-        # если есть определенный тип запроса
+        # check request type
         if request_type:
             if request_type != match_dict['request_type']:
                 continue
 
-        # игнорировать файлы
+        # check ignore files
         if ignore_files:
             log_request = urlparse(match_dict['request'])
             match_file = re.match('.+\.[^./]*$', log_request.path)
             if match_file:
                 continue
 
-        # игнорировать урлы
+        # check ignore URLs
         if ignore_urls:
             if log_url in ignore_urls:
                 continue
 
-        # игнорировать www
+        # check ignore www
         if ignore_www:
             log_host = urlparse(match_dict['request']).netloc
             if log_host.startswith('www.'):
                 out_log[log_url[4:]][0] += 1
                 continue
 
-        # считаем то, что не подошло под условия
+        # count other logs
         out_log[log_url][0] += 1
 
-        # считаем время
+        # count sum response time for URLs
         out_log[log_url][1] += int(match_dict['response_time'])
 
     if slow_queries:
