@@ -19,7 +19,7 @@ class DirDict(MutableMapping):
 
     def __setitem__(self, key, value):
         with open(self._get_full_path_to_file(key), 'w', encoding='utf8') as f:
-            f.write(value if isinstance(value, str) else repr(value))
+            f.write(str(value))
 
     def __getitem__(self, key):
         if key not in self._get_list_of_files():

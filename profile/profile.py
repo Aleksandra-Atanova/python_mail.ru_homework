@@ -1,6 +1,7 @@
 import re
 import time
 import inspect
+from functools import wraps
 
 
 def profile(obj):
@@ -14,6 +15,7 @@ def profile(obj):
 
 
 def profile_func(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         func_name = repr(func)
         func_search = re.search(r'function (.*) ', func_name)
@@ -55,3 +57,4 @@ if __name__ == '__main__':
 
     foo()
     Bar()
+    print(foo)
